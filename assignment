@@ -1,0 +1,64 @@
+#6.1
+import numpy as np
+samples = '/content/drive/My Drive/AMAZON REVIEW/train.ft.txt'
+token_index = {}
+for sample in samples:
+  for word in sample.split():
+    if word not in token_index:
+      token_index[word] = len(token_index) + 1
+max_length = 10
+results = np.zeros(shape=(len(samples),
+max_length,
+max(token_index.values()) + 1))
+for i, sample in enumerate(samples):
+  for j, word in list(enumerate(sample.split()))[:max_length]:
+    index = token_index.get(word)
+results[i, j, index] = 1.
+
+
+
+#6.3
+from keras.preprocessing.text import Tokenizer
+samples = '/content/drive/My Drive/AMAZON REVIEW/train.ft.txt'
+tokenizer = Tokenizer(num_words=1000)
+tokenizer.fit_on_texts(samples)
+sequences = tokenizer.texts_to_sequences(samples)
+one_hot_results = tokenizer.texts_to_matrix(samples, mode='binary')
+word_index = tokenizer.word_index
+print('Found %s unique tokens.' % len(word_index))
+
+
+
+
+#6.4
+import numpy as np
+samples = '/content/drive/My Drive/AMAZON REVIEW/train.ft.txt'
+dimensionality = 1000
+max_length = 10
+results = np.zeros((len(samples), max_length, dimensionality))
+for i, sample in enumerate(samples):
+  for j, word in list(enumerate(sample.split()))[:max_length]:
+    index = abs(hash(word)) % dimensionality
+    results[i, j, index] = 1.
+print(index)
+
+
+
+#6.8
+import os
+samples = '/content/drive/My Drive/AMAZON REVIEW/train.ft.txt'
+train_dir = os.path.join(samples, 'train')
+labels = []
+texts = []
+for label_type in ['__label__1', '__label__2']:
+  dir_name = os.path.join(train_dir, label_type)
+  for fname in dir_name:
+    if fname[-4:] == '.txt':
+      f = open(os.path.join(dir_name, fname))
+      texts.append(f.read())
+      f.close()
+      if label_type == '__label__1':
+         labels.append(0)
+      else:
+         labels.append(1)
+print(texts)
